@@ -10,7 +10,8 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'https://recuperandovidas.cl',
-    'https://www.recuperandovidas.cl'
+    'https://www.recuperandovidas.cl',
+    'https://fundacion-front-opal.vercel.app'
   ]
 }))
 
@@ -25,10 +26,13 @@ const tx = new WebpayPlus.Transaction(
 
 // ── EMAIL CONFIG ──
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
+  family: 4,
   auth: {
     user: process.env.EMAIL_USER || 'recuperandovidascl@gmail.com',
-    pass: process.env.EMAIL_PASS || 'tu_contrasena_de_aplicacion'
+    pass: process.env.EMAIL_PASS || ''
   }
 })
 
