@@ -93,7 +93,7 @@ async function enviarEmailCliente(datos, pago) {
     const remitente = quienManda || 'Tú'
 
     await resend.emails.send({
-      from: 'Fundación Recuperando Vidas <onboarding@resend.dev>',
+      from: 'Fundación Recuperando Vidas <no-reply@recuperandovidas.cl>',
       to: emailCliente,
       subject: `✅ Confirmación de compra - Tarjeta "${tarjeta.nombre}"`,
       html: `
@@ -137,8 +137,10 @@ async function enviarEmailFundacion(datos, pago) {
   try {
     const { paraQuien, quienManda, mensaje, emailDestinatario, emailCliente, tarjeta, enviarAlCliente } = datos
 
-    await resend.emails.send({
-      from: 'Sistema Recuperando Vidas <onboarding@resend.dev>',
+    console.log('📧 Enviando email fundación a: recuperandovidascl@gmail.com')
+    
+    const response = await resend.emails.send({
+      from: 'Sistema Recuperando Vidas <no-reply@recuperandovidas.cl>',
       to: 'recuperandovidascl@gmail.com',
       subject: `🎨 NUEVO PEDIDO - Tarjeta "${tarjeta.nombre}" para ${paraQuien}`,
       html: `
@@ -172,9 +174,9 @@ async function enviarEmailFundacion(datos, pago) {
         </div>
       `
     })
-    console.log('📧 Email fundación enviado')
+    console.log('📧 Email fundación enviado, respuesta Resend:', JSON.stringify(response))
   } catch (error) {
-    console.error('❌ Error email fundación:', error.message)
+    console.error('❌ Error email fundación:', error.message, JSON.stringify(error))
   }
 }
 
