@@ -27,13 +27,18 @@ const tx = new WebpayPlus.Transaction(
 // ── EMAIL CONFIG ──
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  family: 4,
+  port: 587,
+  secure: false,
+  requireTLS: true,
+  tls: {
+    rejectUnauthorized: false
+  },
   auth: {
     user: process.env.EMAIL_USER || 'recuperandovidascl@gmail.com',
     pass: process.env.EMAIL_PASS || ''
-  }
+  },
+  dnsTimeout: 10000,
+  socketTimeout: 10000,
 })
 
 // ── INICIAR TRANSACCIÓN ──
@@ -61,10 +66,14 @@ app.post('/api/webpay/confirm', async (req, res) => {
       console.log('✅ Pago aprobado:', response.amount)
 
       if (tarjetaDatos) {
-        // 1. Email al CLIENTE confirmando su compra
+        console.log('📧 Intentando enviar emails...')
+        console.log('📧 Email cliente:', tarjetaDatos.emailCliente)
+        console.log('📧 Email destinatario:', tarjetaDatos.emailDestinatario)
         await enviarEmailCliente(tarjetaDatos, response)
-        // 2. Email a la FUNDACIÓN con todos los datos para la diseñadora
         await enviarEmailFundacion(tarjetaDatos, response)
+        console.log('📧 Proceso de emails completado')
+      } else {
+        console.log('⚠️ No hay datos de tarjeta, no se envían emails')
       }
 
       res.json({
